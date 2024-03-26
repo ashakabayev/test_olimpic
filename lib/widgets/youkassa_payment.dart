@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 
 import '../viewmodels/payment_viewmodel.dart';
@@ -40,14 +41,12 @@ class _YouKassaPaymentState extends State<YouKassaPayment> {
       );
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      final t = await Provider.of<PaymentViewModel>(context, listen: false)
-          .createYouKassaToken(widget.product);
+      final t = await Provider.of<PaymentViewModel>(context, listen: false).createYouKassaToken(widget.product);
 
       _webCtrl.loadFlutterAsset('assets/html/index.html');
       _webCtrl.setNavigationDelegate(NavigationDelegate(
         onNavigationRequest: (request) {
-          if (request.url
-              .startsWith('https://olympianapp.app/?state=success')) {
+          if (request.url.startsWith('https://olympianapp.app/?state=success')) {
             _paymentSuccess();
             return NavigationDecision.prevent;
           }
@@ -68,9 +67,7 @@ class _YouKassaPaymentState extends State<YouKassaPayment> {
   }
 
   _paymentSuccess() {
-    String alertText = widget.product.id == 'adv_off'
-        ? 'Реклама отключена'
-        : 'Вам начислено ${widget.product.coins} монет';
+    String alertText = widget.product.id == 'adv_off' ? 'Реклама отключена' : 'Вам начислено ${widget.product.coins} монет';
     if (widget.product.id == 'adv_off') {
       context.read<GameViewModel>().turnOffAdv();
     } else {
