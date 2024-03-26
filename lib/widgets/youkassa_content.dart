@@ -48,7 +48,7 @@ class YouKassaContent extends StatelessWidget {
                       onTap: () {
                         final params = {
                           'level_id': context.read<GameViewModel>().activeLevel.id,
-                          'level': context.read<GameViewModel>().getLevelIndex() as int,
+                          'level': context.read<GameViewModel>().getLevelIndex(),
                           'word': context.read<GameViewModel>().focusedWord?.word ?? '',
                         };
 
@@ -96,7 +96,7 @@ class YouKassaContent extends StatelessWidget {
       onTap: () {
         final params = {
           'level_id': context.read<GameViewModel>().activeLevel.id,
-          'level': context.read<GameViewModel>().getLevelIndex() as int,
+          'level': context.read<GameViewModel>().getLevelIndex(),
           'word': context.read<GameViewModel>().focusedWord?.word ?? '',
         };
 

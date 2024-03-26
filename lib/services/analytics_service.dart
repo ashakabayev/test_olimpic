@@ -13,7 +13,7 @@ import 'db_service.dart';
 enum AnalyticsEvents {
   sessionFirstTime,
   sessionStart,
-  Activation,
+  activation,
   onCompleteNextAction,
   onPlayTap,
   onShowAdsWorking,
@@ -51,8 +51,7 @@ class AnalyticsService {
   DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
   final DbService _db = DbService();
   static final AnalyticsService _singleton = AnalyticsService._internal();
-  final Amplitude analytics =
-      Amplitude.getInstance(instanceName: 'Kin-dza-dza');
+  final Amplitude analytics = Amplitude.getInstance(instanceName: 'Kin-dza-dza');
   final _config = const AppMetricaConfig(
     Config.appMetrikaToken,
     logs: false,
@@ -82,8 +81,7 @@ class AnalyticsService {
         'device': deviceId,
       });
     } else {
-      fireEventWithMap(AnalyticsEvents.sessionStart,
-          {'configVersion': ConfigService().appConfig.configVersion});
+      fireEventWithMap(AnalyticsEvents.sessionStart, {'configVersion': ConfigService().appConfig.configVersion});
     }
   }
 
@@ -96,8 +94,7 @@ class AnalyticsService {
     analytics.logEvent(event.name);
   }
 
-  void fireEventWithMap(
-      AnalyticsEvents event, Map<String, Object>? attributes) {
+  void fireEventWithMap(AnalyticsEvents event, Map<String, Object>? attributes) {
     log(event.name);
     log(attributes.toString());
     if (kDebugMode) {

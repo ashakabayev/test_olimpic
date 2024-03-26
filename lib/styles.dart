@@ -177,6 +177,6 @@ abstract class ThemeText {
 
   static const TextStyle info = TextStyle(
     fontSize: 10,
-    color: Color(0xFF89763A18),
+    color: Color(0xff89763a18),
   );
 }

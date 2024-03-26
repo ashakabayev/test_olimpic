@@ -36,7 +36,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final _analytics = AnalyticsService();
+    final analytics = AnalyticsService();
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -64,7 +64,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                     onPageChanged: (index, reason) {
                       setState(() {
                         _current = index;
-                        _analytics.fireEventWithMap(
+                        analytics.fireEventWithMap(
                           AnalyticsEvents.onOnboardingNextSlide,
                           {'slide': index},
                         );
@@ -113,17 +113,17 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                     .setOnBoardingDone();
                 if ((_current + 1) == imgList.length) {
                   Provider.of<GameViewModel>(context, listen: false).play();
-                  _analytics.fireEvent(AnalyticsEvents.onOnboardingFinish);
+                  analytics.fireEvent(AnalyticsEvents.onOnboardingFinish);
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => LevelsScreen()),
+                    MaterialPageRoute(builder: (_) => const LevelsScreen()),
                   );
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => AreaScreen()),
+                    MaterialPageRoute(builder: (_) => const AreaScreen()),
                   );
                 } else {
-                  _analytics.fireEventWithMap(
+                  analytics.fireEventWithMap(
                       AnalyticsEvents.onOnboardingSkip, {'slide': _current});
                 }
               },

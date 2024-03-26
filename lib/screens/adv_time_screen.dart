@@ -20,6 +20,7 @@ class _AdvTimeScreenState extends State<AdvTimeScreen> {
 
   @override
   void initState() {
+    super.initState();
     final AdService ad = AdService();
     _timer = Timer(const Duration(milliseconds: 1500), () async {
       ad.showFullScreenBanner();

@@ -19,7 +19,7 @@ class LevelsScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         body: CustomScrollView(
           slivers: [
-            SliverAppBar(
+            const SliverAppBar(
               automaticallyImplyLeading: false,
               pinned: false,
               snap: false,

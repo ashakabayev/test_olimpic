@@ -83,7 +83,7 @@ class _InAppContentState extends State<InAppContent> {
 
                           final params = {
                             'level_id': ctrl.activeLevel.id,
-                            'level': ctrl.getLevelIndex() as int,
+                            'level': ctrl.getLevelIndex(),
                             'word': ctrl.focusedWord?.word ?? '',
                           };
 

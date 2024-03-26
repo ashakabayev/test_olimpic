@@ -80,21 +80,18 @@ class GameViewModel with ChangeNotifier {
 
   // Проверяет пройден ли уровень
   _isLevelComplete() {
-    final isComplete =
-        activeLevel.data.where((e) => e.state != WordState.correct).isEmpty;
+    final isComplete = activeLevel.data.where((e) => e.state != WordState.correct).isEmpty;
     if (isComplete) {
       if (getLevelIndex() == 1 && !isFirstLevelComplete) {
         isFirstLevelComplete = true;
-        _analytics.fireEvent(AnalyticsEvents.Activation);
+        _analytics.fireEvent(AnalyticsEvents.activation);
       }
 
       activeLevel.state = LevelState.success;
-      final lastCompleteLevel =
-          _levels.indexWhere((e) => e.id == activeLevel.id);
+      final lastCompleteLevel = _levels.indexWhere((e) => e.id == activeLevel.id);
 
       final nextOpenLevel = lastCompleteLevel + 1;
-      if (nextOpenLevel < _levels.length &&
-          _levels[nextOpenLevel].state != LevelState.success) {
+      if (nextOpenLevel < _levels.length && _levels[nextOpenLevel].state != LevelState.success) {
         _levels[nextOpenLevel].state = LevelState.available;
         _cacheImages();
       }
@@ -109,8 +106,7 @@ class GameViewModel with ChangeNotifier {
   }
 
   getLastActiveIndex() {
-    return _levels.indexWhere((l) =>
-        (l.state == LevelState.available || l.state == LevelState.started));
+    return _levels.indexWhere((l) => (l.state == LevelState.available || l.state == LevelState.started));
   }
 
   // Добавляем активный уровень
@@ -134,32 +130,23 @@ class GameViewModel with ChangeNotifier {
       return word;
     }).toList();
 
-    groups = groupBy(activeLevel.data, (WordModel obj) => obj.depth)
-        .values
-        .toList()
-        .reversed
-        .toList();
+    groups = groupBy(activeLevel.data, (WordModel obj) => obj.depth).values.toList().reversed.toList();
 
     notifyListeners();
   }
 
   // Добавляет в след слово листочки
   _checkNextWordLeaf(WordModel word) {
-    final depthWords = activeLevel.data
-        .where((element) => element.depth == word.depth)
-        .toList();
+    final depthWords = activeLevel.data.where((element) => element.depth == word.depth).toList();
 
     final wordIndex = depthWords.indexOf(word);
     final isEven = wordIndex % 2 == 1;
 
     // Помечаем дочерний элемент
     final nextDepth = word.depth / 2;
-    final nextDepthWords = activeLevel.data
-        .where((element) => element.depth == nextDepth)
-        .toList();
+    final nextDepthWords = activeLevel.data.where((element) => element.depth == nextDepth).toList();
 
-    final actIndex =
-        isEven ? (wordIndex / 2).round() - 1 : (wordIndex / 2).round();
+    final actIndex = isEven ? (wordIndex / 2).round() - 1 : (wordIndex / 2).round();
     if (isEven) {
       nextDepthWords[actIndex].showEndLeaf = true;
     } else if (nextDepthWords.asMap().containsKey(actIndex)) {
@@ -184,9 +171,7 @@ class GameViewModel with ChangeNotifier {
 
       lastGuessedWord = word.word;
 
-      final depthWords = activeLevel.data
-          .where((element) => element.depth == word.depth)
-          .toList();
+      final depthWords = activeLevel.data.where((element) => element.depth == word.depth).toList();
 
       final wordIndex = depthWords.indexOf(word);
       final isEven = wordIndex % 2 == 1;
@@ -269,7 +254,7 @@ class GameViewModel with ChangeNotifier {
     return isCorrect;
   }
 
-  showBanner({ required BuildContext context }) {
+  showBanner({required BuildContext context}) {
     // Показ баннера
     if (getLevelIndex() > 1) {
       Navigator.of(context).push(
@@ -396,14 +381,10 @@ class GameViewModel with ChangeNotifier {
 
     final random = Random();
     final words = groups
-        .firstWhere((group) =>
-            group.firstWhereOrNull((w) =>
-                (w.state == WordState.idle || w.state == WordState.input)) !=
-            null)
+        .firstWhere((group) => group.firstWhereOrNull((w) => (w.state == WordState.idle || w.state == WordState.input)) != null)
         .toList();
 
-    final idleWords =
-        words.where((word) => word.state != WordState.correct).toList();
+    final idleWords = words.where((word) => word.state != WordState.correct).toList();
 
     final max = idleWords.length;
     final randWord = idleWords[random.nextInt(max)];
@@ -476,8 +457,7 @@ class GameViewModel with ChangeNotifier {
           title: 'Недостаточно монет',
         ),
       ).then(
-        (value) => _analytics
-            .fireEventWithMap(AnalyticsEvents.onMonetizationWindowClose, {
+        (value) => _analytics.fireEventWithMap(AnalyticsEvents.onMonetizationWindowClose, {
           'level_id': activeLevel.id,
           'level': getLevelIndex(),
           'screen': 'HelpScreen50',
@@ -581,8 +561,7 @@ class GameViewModel with ChangeNotifier {
   }
 
   getNextLevel(BuildContext context) {
-    var index =
-        _levels.indexWhere((element) => element.state != LevelState.success);
+    var index = _levels.indexWhere((element) => element.state != LevelState.success);
     if (index == -1) {
       showDialog(
         context: context,
@@ -616,9 +595,7 @@ class GameViewModel with ChangeNotifier {
   }
 
   getAllDoneWords() {
-    return activeLevel.data
-        .where((element) => element.state == WordState.correct)
-        .length;
+    return activeLevel.data.where((element) => element.state == WordState.correct).length;
   }
 
   getCoinsByRound() => coinsByRound;
@@ -645,8 +622,7 @@ class GameViewModel with ChangeNotifier {
 
   _cacheImages() {
     for (final lvl in _levels.where((element) => element.state == LevelState.available)) {
-      final wordsWithImage =
-          lvl.data.where((element) => element.image.isNotEmpty);
+      final wordsWithImage = lvl.data.where((element) => element.image.isNotEmpty);
       for (final word in wordsWithImage) {
         DefaultCacheManager().downloadFile(word.image);
       }
@@ -654,11 +630,7 @@ class GameViewModel with ChangeNotifier {
   }
 
   isLastWord() {
-    return activeLevel.data
-            .where((elm) =>
-                elm.state == WordState.idle || elm.state == WordState.input)
-            .length ==
-        1;
+    return activeLevel.data.where((elm) => elm.state == WordState.idle || elm.state == WordState.input).length == 1;
   }
 
   isBuy50Disabled() {
@@ -666,9 +638,7 @@ class GameViewModel with ChangeNotifier {
   }
 
   isBuy25Disabled() {
-    return focusedWord != null ||
-        _isLevelComplete() ||
-        getAllDoneWords() == activeLevel.data.length - 1;
+    return focusedWord != null || _isLevelComplete() || getAllDoneWords() == activeLevel.data.length - 1;
   }
 
   updateCoins(int addCoins) {

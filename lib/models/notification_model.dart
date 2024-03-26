@@ -12,7 +12,7 @@ class NotificationDataKeys {
 class NotificationModel {
   final int addCoins;
 
-  NotificationModel({
+  const NotificationModel({
     this.addCoins = 0,
   });
 

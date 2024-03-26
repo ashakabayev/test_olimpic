@@ -3,6 +3,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../models/word_model.dart';
 import '../utils/physics.dart';
 import '../viewmodels/game_viewmodel.dart';
 import '../widgets/base_scaffold.dart';
@@ -32,18 +33,19 @@ class AreaScreen extends StatelessWidget {
             ),
             HelpButton(
               word: true,
-              helpText: vm.isLastWord()
-                  ? 'Открыть выбранное слово. Нельзя открыть последнее слово'
-                  : 'Открыть выбранное слово. Выберете ячейку',
+              helpText:
+                  vm.isLastWord() ? 'Открыть выбранное слово. Нельзя открыть последнее слово' : 'Открыть выбранное слово. Выберете ячейку',
             ),
-            const SizedBox(height: 66,),
+            const SizedBox(
+              height: 66,
+            ),
           ],
         ),
         appBar: AppBar(
           automaticallyImplyLeading: false,
           elevation: 0,
           toolbarHeight: 76.0,
-          flexibleSpace: ScoreBar(
+          flexibleSpace: const ScoreBar(
             withPadding: true,
             showLevel: true,
             prevScreen: 'Level',
@@ -88,6 +90,7 @@ class __NestedScrollState extends State<_NestedScroll> {
 
   _ensureScroll(BuildContext ctx) async {
     await Future.delayed(const Duration(milliseconds: 500));
+
     ctx.read<GameViewModel>().scrollToWidget();
   }
 
@@ -129,25 +132,22 @@ class __NestedScrollState extends State<_NestedScroll> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           ...group.map((word) {
-                            final key =
-                                word == vm.scrollableWord ? dataKey : null;
+                            final key = word == vm.scrollableWord ? dataKey : null;
                             if (key != null) {
                               vm.scrollKey = key;
                             }
-                            final showEndLeaf =
-                                (widthOffset / wordWidth).floor() <= index;
-                            final showStartLeaf =
-                                (widthOffset / wordWidth).floor() == index;
+                            final showEndLeaf = (widthOffset / wordWidth).floor() <= index;
+                            final showStartLeaf = (widthOffset / wordWidth).floor() == index;
+
+                            final levelIndex = groups[index].indexOf(word);
                             return AnimatedBuilder(
                               animation: _scrollCtrl,
                               builder: (context, child) {
-                                final page =
-                                    max((widthOffset / wordWidth).floor(), 0);
+                                final page = max((widthOffset / wordWidth).floor(), 0);
                                 final position = _recalculateOffset(
                                   maxItems: groups[page].length,
                                   depth: word.depth,
                                 );
-
                                 return AnimatedContainer(
                                   width: wordWidth,
                                   height: itemHeight,
@@ -165,6 +165,7 @@ class __NestedScrollState extends State<_NestedScroll> {
                                 word: word,
                                 showEndLeaf: showEndLeaf,
                                 showStartLeaf: showStartLeaf,
+                                animate: index == 0 && levelIndex == 0 && word.state != WordState.correct,
                               ),
                             );
                           }).toList(),
@@ -187,10 +188,8 @@ class __NestedScrollState extends State<_NestedScroll> {
             child: Container(
               height: 40,
               decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [Colors.transparent, Colors.black87]),
+                gradient:
+                    LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.transparent, Colors.black87]),
               ),
             ),
           ),
@@ -200,11 +199,7 @@ class __NestedScrollState extends State<_NestedScroll> {
             right: 10,
             child: Center(
               child: AnimatedSmoothIndicator(
-                activeIndex: max(
-                    ((_scrollCtrl.hasClients ? _scrollCtrl.offset : 0) /
-                            wordWidth)
-                        .floor(),
-                    0),
+                activeIndex: max(((_scrollCtrl.hasClients ? _scrollCtrl.offset : 0) / wordWidth).floor(), 0),
                 count: groups.length,
                 effect: const ExpandingDotsEffect(
                   dotWidth: 12,

@@ -94,14 +94,14 @@ class ScoreBar extends StatelessWidget {
               child: Image.asset('assets/images/score.png', width: 160),
             ),
             Positioned(
+              top: 12,
+              right: 70,
+              left: 30,
               child: Text(
                 coins.toString(),
                 textAlign: TextAlign.center,
                 style: ThemeText.pointsText,
               ),
-              top: 12,
-              right: 70,
-              left: 30,
             )
           ],
         ),

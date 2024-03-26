@@ -112,9 +112,9 @@ class PaymentViewModel with ChangeNotifier {
     // cancel all transactions.
     if (Platform.isIOS) {
       var transactions = await SKPaymentQueueWrapper().transactions();
-      transactions.forEach((skPaymentTransactionWrapper) {
+      for (var skPaymentTransactionWrapper in transactions) {
         SKPaymentQueueWrapper().finishTransaction(skPaymentTransactionWrapper);
-      });
+      }
     }
     _inApp.buyConsumable(purchaseParam: purchaseParam);
   }

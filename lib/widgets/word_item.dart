@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import '../viewmodels/game_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -7,7 +8,6 @@ import 'image_dialog.dart';
 import 'shake.dart';
 import '../utils/ext.dart';
 import '../models/word_model.dart';
-import 'wrong_answer_dialog.dart';
 
 // ignore: constant_identifier_names
 const ANIMATION_DURATION = 100;
@@ -16,12 +16,14 @@ class WordItem extends StatefulWidget {
   final WordModel word;
   final bool showStartLeaf;
   final bool showEndLeaf;
+  final bool animate;
 
   const WordItem({
     Key? key,
     required this.word,
     this.showStartLeaf = false,
     this.showEndLeaf = true,
+    this.animate = false,
   }) : super(key: key);
 
   @override
@@ -41,9 +43,9 @@ class _WordItemState extends State<WordItem> {
 
     _wordFocusNode.addListener(() {
       context.read<GameViewModel>().wordFocus(
-        word: widget.word,
-        focus: _wordFocusNode.hasFocus,
-      );
+            word: widget.word,
+            focus: _wordFocusNode.hasFocus,
+          );
 
       if (!_wordFocusNode.hasFocus) {
         context.read<GameViewModel>().clearActiveWord();
@@ -66,8 +68,7 @@ class _WordItemState extends State<WordItem> {
           onShow: () {
             _wordFocusNode.unfocus();
             _textController.clear();
-          }
-      );
+          });
     }
   }
 
@@ -80,7 +81,7 @@ class _WordItemState extends State<WordItem> {
       _textController.clear();
     }
 
-    final _isCorrectWordLong = widget.word.word.length > 10;
+    final isCorrectWordLong = widget.word.word.length > 10;
 
     return ExcludeSemantics(
       child: ShakeAnimation(
@@ -108,10 +109,20 @@ class _WordItemState extends State<WordItem> {
                       widget.word.word.capitalize(),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: ThemeText.wordItemCorrect.merge(
-                          TextStyle(fontSize: _isCorrectWordLong ? 12 : 16)),
+                      style: ThemeText.wordItemCorrect.merge(TextStyle(fontSize: isCorrectWordLong ? 12 : 16)),
                       textAlign: TextAlign.center,
                     ),
+                  ),
+                ),
+              ),
+            if (widget.animate)
+              Align(
+                alignment: Alignment.center,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 20, left: 20),
+                  child: Lottie.asset(
+                    'assets/lottie/click.json',
+                    alignment: Alignment.bottomCenter,
                   ),
                 ),
               ),
@@ -158,14 +169,10 @@ class _WordItemState extends State<WordItem> {
                     onTap: wrongAnswer,
                     textAlign: TextAlign.center,
                     scrollPadding: const EdgeInsets.only(bottom: 80),
-                    style: widget.word.state == WordState.correct
-                        ? ThemeText.wordItemCorrect
-                        : ThemeText.wordItemInput,
+                    style: widget.word.state == WordState.correct ? ThemeText.wordItemCorrect : ThemeText.wordItemInput,
                     onSubmitted: (value) {
                       final vm = context.read<GameViewModel>();
-                      if (!vm.checkWord(
-                              word: widget.word, value: value, ctx: context) &&
-                          value.isNotEmpty) {
+                      if (!vm.checkWord(word: widget.word, value: value, ctx: context) && value.isNotEmpty) {
                         _textController.clear();
                         _wordFocusNode.requestFocus();
                         _shakeKey.currentState?.shake();
